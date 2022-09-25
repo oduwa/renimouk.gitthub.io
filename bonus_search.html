@@ -1,0 +1,42 @@
+<html>
+<head>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+</head>
+<body>
+    <div class="search">
+        <form>
+          <input type="text" id="searchField"/>
+          <button type="button" id="searchButton" onclick="searchFunction()">
+            Search
+        </button>
+        </form>
+      </div>
+    </div>
+
+
+    <script>
+        function searchFunction() {
+            // Get search field content
+            var searchQuery = $('#searchField').val();
+
+            // Make search request
+            $.ajax({ 
+                type: 'GET', 
+                url: 'https://openlibrary.org/search.json?q=' + searchQuery, 
+                data: { get_param: 'value' }, 
+                dataType: 'json',
+                success: function (data) { 
+                    $.each(data['docs'], function(index, element) {
+                        var image = $("<img src='" + "https://covers.openlibrary.org/b/id/" + element['cover_i'] + "-M.jpg" + "'></a>");
+                        var title = $("<p></p>").text(element['title']);
+                        var author = $("<p></p>").text("Authors: " + element['author_name']);
+                        var lineBreak = $("<br />");
+                        $('body').append(image, title, author, lineBreak);
+                    });
+                }
+            });
+        };
+    </script>
+
+</body>
+</html>
