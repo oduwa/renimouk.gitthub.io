@@ -1,0 +1,45 @@
+<html>
+<head>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+</head>
+<body>
+    <script>
+        var getUrlParameter = function getUrlParameter(sParam) {
+        var sPageURL = window.location.search.substring(1),
+            sURLVariables = sPageURL.split('&'),
+            sParameterName,
+            i;
+
+        for (i = 0; i < sURLVariables.length; i++) {
+            sParameterName = sURLVariables[i].split('=');
+
+            if (sParameterName[0] === sParam) {
+                return sParameterName[1] === undefined ? true : decodeURIComponent(sParameterName[1]);
+            }
+        }
+        return false;
+    };
+
+    $(document).ready(function(){
+    // jQuery methods go here...
+        var albumId = getUrlParameter("albumId");
+        var albumName = getUrlParameter("albumName");
+        $.ajax({ 
+            type: 'GET', 
+            url: 'http://jsonplaceholder.typicode.com/photos?albumId=' + albumId, 
+            data: { get_param: 'value' }, 
+            dataType: 'json',
+            success: function (data) { 
+                    $.each(data, function(index, element) {
+                        var album = $("<p></p>").text("ALBUM NAME: " + albumName);
+                        var image = $("<img src='" + element['url'] + "'></a>");
+                        var title = $("<p></p>").text(element['title']);
+                        var lineBreak = $("<br />");
+                        $('body').append(album, lineBreak, image, title, lineBreak, lineBreak);
+                    });
+            }
+        });
+    });
+    </script>
+</body>
+</html>

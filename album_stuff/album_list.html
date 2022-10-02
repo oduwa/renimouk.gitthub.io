@@ -1,0 +1,62 @@
+<html>
+<head>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+</head>
+<body>
+    <script>
+        $(document).ready(function(){
+
+            var getUrlParameter = function getUrlParameter(sParam) {
+            var sPageURL = window.location.search.substring(1),
+                sURLVariables = sPageURL.split('&'),
+                sParameterName,
+                i;
+
+            for (i = 0; i < sURLVariables.length; i++) {
+                sParameterName = sURLVariables[i].split('=');
+
+                if (sParameterName[0] === sParam) {
+                    return sParameterName[1] === undefined ? true : decodeURIComponent(sParameterName[1]);
+                }
+            }
+            return false;
+        };
+
+    // jQuery methods go here...
+    var userId = getUrlParameter("userId");
+
+    // Default to userId 1 if not provided
+    if(!userId) {
+        userId = 1;
+    }
+
+    $.ajax({ 
+        type: 'GET', 
+        url: 'http://jsonplaceholder.typicode.com/users/' + userId, 
+        data: { get_param: 'value' }, 
+        dataType: 'json',
+        success: function (element) { 
+            var name = $("<p></p>").text(element['name']);
+            $('body').append(name);
+            $('body').append($("<p></p>").text("ALBUMS:"));
+
+            $.ajax({ 
+                type: 'GET', 
+                url: 'http://jsonplaceholder.typicode.com/albums?userId/' + userId,
+                data: { get_param: 'value' }, 
+                dataType: 'json',
+                success: function (data) { 
+                    $.each(data, function(index, element) {
+                        var title = $("<a href='album.html?albumId=" + element['id'] + "&albumName=" + element['title'] + "'><p></p></a>").text(element['title']);
+                        var lineBreak = $("<br />");
+                        $('body').append(title, lineBreak, lineBreak);
+                    });
+                }
+            });
+        }
+    });
+
+});
+    </script>
+</body>
+</html>
